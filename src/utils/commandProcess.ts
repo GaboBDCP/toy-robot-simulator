@@ -23,16 +23,17 @@ const rotateRight = (direction: Direction): Direction => {
 
 const moveForward = (position: RobotProps, gridSize: number): RobotProps => {
   let { positionX, positionY, direction } = position;
-
+  console.log('positionX', positionX);
+  console.log('positionY', positionY);
   switch (direction) {
     case 'NORTH':
-      positionX = Math.max(0, positionX - 1); // Mueve hacia el norte si no está en el borde superior
+      positionX = Math.min(gridSize - 1, positionX + 1); // Mueve hacia el norte si no está en el borde superior
       break;
     case 'EAST':
       positionY = Math.min(gridSize - 1, positionY + 1); // Mueve hacia el este si no está en el borde derecho
       break;
     case 'SOUTH':
-      positionX = Math.min(gridSize - 1, positionX + 1); // Mueve hacia el sur si no está en el borde inferior
+      positionX = Math.max(0, positionX - 1); // Mueve hacia el sur si no está en el borde inferior
       break;
     case 'WEST':
       positionY = Math.max(0, positionY - 1); // Mueve hacia el oeste si no está en el borde izquierdo
@@ -42,12 +43,25 @@ const moveForward = (position: RobotProps, gridSize: number): RobotProps => {
   return { positionX, positionY, direction };
 };
 
-const commandProcess = (commandList: Commands[], tableTopSize: number) => {
-  console.log('commands', commandList);
-  console.log('tableTopSize', tableTopSize);
+const parcePosition = (command: string): RobotProps => {
+  const x = parseInt(command.split(',')[0].split(' ')[1]);
+  const y = parseInt(command.split(',')[1]);
+  const direction: Direction = command.split(',')[2] as Direction;
+  return { positionX: x, positionY: y, direction };
+};
 
+const commandProcess = (commandList: Commands[], tableTopSize: number) => {
+  const x = parcePosition(commandList[0]).positionX;
+  const y = parcePosition(commandList[0]).positionY;
+  const direction: Direction = parcePosition(commandList[0]).direction;
   // Posición inicial del Rover
-  let position: RobotProps = { positionX: 0, positionY: 0, direction: 'NORTH' };
+  let position: RobotProps = {
+    positionX: x,
+    positionY: y,
+    direction: direction,
+  };
+
+  console.log('Init: position', position);
 
   // Procesa cada comando
   commandList.forEach((command) => {
@@ -60,7 +74,7 @@ const commandProcess = (commandList: Commands[], tableTopSize: number) => {
     }
   });
 
-  console.log('position', position);
+  console.log('Res: position', position);
 
   return position; // Retorna la posición final
 };
