@@ -1,10 +1,9 @@
 import SmartToyIcon from '@mui/icons-material/SmartToy';
-import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import { Box, Icon, Typography } from '@mui/material';
-import { Direction, RobotProps } from '../types';
+import { Box, Typography } from '@mui/material';
+import { RobotProps } from '../types';
 
 const Robot = (props: RobotProps) => {
-  const { direction, positionX, positionY } = props;
+  const { positionX, positionY } = props;
 
   return (
     <>

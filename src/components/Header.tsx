@@ -1,7 +1,4 @@
-import React, { useState } from 'react';
-import { Box, TextField, Button } from '@mui/material';
-import commandProcess from '../utils/commandProcess';
-import { Commands } from '../types/Commands';
+import { Box, TextField } from '@mui/material';
 
 interface HeaderProps {
   width: number;
