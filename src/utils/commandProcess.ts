@@ -22,6 +22,8 @@ const rotateRight = (direction: Direction): Direction => {
 };
 
 const moveForward = (position: RobotProps, gridSize: number): RobotProps => {
+  console.log('gridSize', gridSize);
+
   let { positionX, positionY, direction } = position;
 
   switch (direction) {

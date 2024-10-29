@@ -109,4 +109,18 @@ describe('commandProcess', () => {
       direction: 'WEST',
     });
   });
+
+  it('should not move out of WEST bounds', () => {
+    const result = commandProcess(
+      ['PLACE 2,2,NORTH', 'RIGHT', 'MOVE', 'MOVE', 'MOVE'],
+      5,
+    );
+
+    console.log('result', result);
+    expect(result).toStrictEqual({
+      positionX: 4,
+      positionY: 2,
+      direction: 'EAST',
+    });
+  });
 });

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Box, Button } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 
-// type Direction = 'north' | 'south' | 'east' | 'west';
-import Square, { SquareProps } from './Square'; // Assuming Square is another component
-import { Direction } from '../types';
+import Square, { SquareProps } from './Square';
+import { Direction, RobotProps } from '../types';
+import commandProcess from '../utils/commandProcess';
+import { Commands } from '../types/Commands';
 
 export interface TableTopProps {
   width: number;
@@ -12,11 +13,39 @@ export interface TableTopProps {
 
 const TableTop = ({ width, height }: TableTopProps) => {
   const [squares, setSquares] = useState<SquareProps[]>([]);
-  const [robotPosition, setRobotPosition] = useState({
-    x: 0,
-    y: 0,
+  const [robotPosition, setRobotPosition] = useState<RobotProps>({
+    positionX: 0,
+    positionY: 0,
     direction: 'NORTH' as Direction,
   });
+
+  const [place, setPlace] = useState<RobotProps>({
+    positionX: 0,
+    positionY: 0,
+    direction: 'NORTH',
+  });
+
+  const [commands, setCommands] = useState<Commands[]>([
+    'PLACE 0,0,NORTH',
+    'MOVE',
+  ]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('commands', commands);
+    const result = commandProcess(commands, width * height);
+    setRobotPosition({
+      positionX: result.positionX,
+      positionY: result.positionY,
+      direction: result.direction,
+    });
+    setPlace({
+      positionX: result.positionX,
+      positionY: result.positionY,
+      direction: result.direction,
+    });
+    console.log('result', result);
+  };
 
   useEffect(() => {
     const initialSquares: SquareProps[] = [];
@@ -25,37 +54,37 @@ const TableTop = ({ width, height }: TableTopProps) => {
         initialSquares.push({
           x,
           y,
-          isActive: robotPosition.x === x && robotPosition.y === y,
+          isActive:
+            robotPosition.positionX === x && robotPosition.positionY === y,
           direction:
-            robotPosition.x === x && robotPosition.y === y
+            robotPosition.positionX === x && robotPosition.positionY === y
               ? robotPosition.direction
               : null,
+          place: place,
+          setPlace: setPlace,
         });
       }
     }
     setSquares(initialSquares);
-  }, [width, height, robotPosition]);
-
-  const updateRobotPosition = (
-    newX: number,
-    newY: number,
-    newDirection: Direction,
-  ) => {
-    setSquares((prevSquares) =>
-      prevSquares.map((square) =>
-        square.x === newX && square.y === newY
-          ? { ...square, isActive: true, direction: newDirection }
-          : { ...square, isActive: false, direction: null },
-      ),
-    );
-  };
+  }, [width, height, robotPosition, commands]);
 
   const handleSetRobotPosition = (
-    x: number,
-    y: number,
+    positionX: number,
+    positionY: number,
     direction: Direction,
   ) => {
-    setRobotPosition({ x, y, direction });
+    setRobotPosition({ positionX, positionY, direction });
+    setCommands(() => [`PLACE ${positionX},${positionY},${direction}`]);
+  };
+
+  const handleReset = () => {
+    setCommands(() => ['PLACE 0,0,NORTH']);
+    setRobotPosition(() => ({
+      positionX: 0,
+      positionY: 0,
+      direction: 'NORTH',
+    }));
+    setPlace({ positionX: 0, positionY: 0, direction: 'NORTH' });
   };
 
   const rows = [];
@@ -68,11 +97,13 @@ const TableTop = ({ width, height }: TableTopProps) => {
       columns.push(
         <td key={`${y}-${x}`}>
           <Square
-            x={x}
-            y={y}
+            x={square?.isActive ? robotPosition.positionX : x}
+            y={square?.isActive ? robotPosition.positionY : y}
             isActive={square?.isActive}
             direction={square?.direction}
             setRobotPosition={handleSetRobotPosition}
+            place={place}
+            setPlace={setPlace}
           />
         </td>,
       );
@@ -81,31 +112,97 @@ const TableTop = ({ width, height }: TableTopProps) => {
   }
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      overflow="auto"
-      sx={{ padding: { xs: '0', sm: '0', md: '2' } }}
-    >
+    <>
       <Box
         display="flex"
-        justifyContent="flex-start"
+        justifyContent="center"
         overflow="auto"
-        sx={{
-          padding: { xs: '0', sm: '0', md: '2' },
-        }}
+        sx={{ padding: { xs: '0', sm: '0', md: '2' } }}
       >
-        <table
-          border={1}
-          style={{ borderCollapse: 'collapse', border: 'solid' }}
+        <Box
+          display="flex"
+          justifyContent="flex-start"
+          overflow="auto"
+          sx={{
+            padding: { xs: '0', sm: '0', md: '2' },
+          }}
         >
-          <tbody>{rows}</tbody>
-        </table>
+          <table
+            border={1}
+            style={{ borderCollapse: 'collapse', border: 'solid' }}
+          >
+            <tbody>{rows}</tbody>
+          </table>
+        </Box>
       </Box>
-      <Button onClick={() => updateRobotPosition(2, 2, 'WEST' as Direction)}>
-        UPDATE TO 2/2
-      </Button>
-    </Box>
+      <Box
+        display="flex"
+        justifyContent="center"
+        overflow="auto"
+        sx={{ padding: { xs: '0', sm: '0', md: '2' } }}
+      >
+        <Button
+          onClick={() =>
+            setCommands((prevCommands) => [...prevCommands, 'LEFT' as Commands])
+          }
+        >
+          LEFT
+        </Button>
+        <Button
+          onClick={() =>
+            setCommands((prevCommands) => [
+              ...prevCommands,
+              'RIGHT' as Commands,
+            ])
+          }
+        >
+          RIGHT
+        </Button>
+        <Button
+          onClick={() =>
+            setCommands((prevCommands) => [...prevCommands, 'MOVE' as Commands])
+          }
+        >
+          MOVE
+        </Button>
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{ marginRight: '10px', marginBottom: '18px' }}
+          onClick={handleSubmit}
+        >
+          Run
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ marginRight: '10px', marginBottom: '18px' }}
+          onClick={handleReset}
+        >
+          RESET
+        </Button>
+      </Box>
+      <Box
+        display="flex"
+        justifyContent="center"
+        overflow="auto"
+        sx={{ padding: { xs: '0', sm: '0', md: '2' } }}
+      >
+        <TextField
+          label="Commands"
+          type="text"
+          variant="outlined"
+          color="primary"
+          value={commands}
+          margin="normal"
+          size="small"
+          fullWidth
+          sx={{ marginRight: '10px', maxWidth: '80vh' }}
+        />
+      </Box>
+    </>
   );
 };
 

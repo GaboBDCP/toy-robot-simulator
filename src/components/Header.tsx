@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Box, TextField, Button } from '@mui/material';
+import commandProcess from '../utils/commandProcess';
+import { Commands } from '../types/Commands';
 
 interface HeaderProps {
   width: number;
@@ -14,8 +16,6 @@ const Header: React.FC<HeaderProps> = ({
   setWidth,
   setHeight,
 }) => {
-  const [commands, setCommands] = useState('');
-
   const handleWidthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setWidth(Number(event.target.value));
   };
@@ -24,11 +24,19 @@ const Header: React.FC<HeaderProps> = ({
     setHeight(Number(event.target.value));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('commands', commands);
-    setCommands('');
-  };
+  // const updateRobotPosition = (
+  //   newX: number,
+  //   newY: number,
+  //   newDirection: Direction,
+  // ) => {
+  //   setSquares((prevSquares) =>
+  //     prevSquares.map((square) =>
+  //       square.x === newX && square.y === newY
+  //         ? { ...square, isActive: true, direction: newDirection }
+  //         : { ...square, isActive: false, direction: null },
+  //     ),
+  //   );
+  // };
 
   return (
     <Box
@@ -40,7 +48,6 @@ const Header: React.FC<HeaderProps> = ({
       autoComplete="off"
       p={2}
       color="primary"
-      onSubmit={handleSubmit}
     >
       <TextField
         label="Width"
@@ -49,6 +56,9 @@ const Header: React.FC<HeaderProps> = ({
         onChange={handleWidthChange}
         variant="outlined"
         color="primary"
+        margin="normal"
+        size="small"
+        sx={{ width: '80px', marginRight: '10px', marginBottom: '32px' }}
       />
       <TextField
         label="Height"
@@ -57,20 +67,10 @@ const Header: React.FC<HeaderProps> = ({
         onChange={handleHeightChange}
         variant="outlined"
         color="primary"
+        margin="normal"
+        size="small"
+        sx={{ width: '80px', marginRight: '10px', marginBottom: '32px' }}
       />
-      <TextField
-        label="Commands"
-        type="text"
-        variant="outlined"
-        color="primary"
-        value={commands}
-        onChange={(e) => setCommands(e.target.value)}
-        placeholder="Ejemplo: LMLMRM"
-        helperText="L = Turn Left, R = Turn right, M = Move forward"
-      />
-      <Button type="submit" variant="contained" color="primary">
-        Run
-      </Button>
     </Box>
   );
 };

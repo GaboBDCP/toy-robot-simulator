@@ -4,12 +4,15 @@ import Robot from './Robot';
 import { useState } from 'react';
 
 export interface SquareProps {
+  robotPosition?: RobotProps;
   setRobotPosition?: (x: number, y: number, direction: Direction) => void;
   x: number;
   y: number;
   direction?: Direction | null;
   isActive?: boolean;
   borders?: Direction[] | null;
+  place: RobotProps;
+  setPlace: (place: RobotProps) => void;
 }
 
 const Square = ({
@@ -17,13 +20,16 @@ const Square = ({
   y,
   isActive,
   direction,
+  place,
+  setPlace,
+
   setRobotPosition,
 }: SquareProps) => {
-  const [place, setPlace] = useState<RobotProps>({
-    positionX: 0,
-    positionY: 0,
-    direction: 'NORTH',
-  });
+  // const [place, setPlace] = useState<RobotProps>({
+  //   positionX: 0,
+  //   positionY: 0,
+  //   direction: 'NORTH',
+  // });
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -35,6 +41,7 @@ const Square = ({
     console.log('x', x, 'y', y, 'direction', direction);
     if (setRobotPosition) {
       setRobotPosition(x, y, direction);
+      setPlace({ positionX: x, positionY: y, direction });
     }
     setAnchorEl(null);
   };
