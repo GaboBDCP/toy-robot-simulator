@@ -1,8 +1,10 @@
-import { Box, Typography } from '@mui/material';
-import { Direction } from '../types';
+import { Box, Button, Menu, MenuItem, Typography } from '@mui/material';
+import { Direction, RobotProps } from '../types';
 import Robot from './Robot';
+import { useState } from 'react';
 
 export interface SquareProps {
+  setRobotPosition?: (x: number, y: number, direction: Direction) => void;
   x: number;
   y: number;
   direction?: Direction | null;
@@ -10,16 +12,42 @@ export interface SquareProps {
   borders?: Direction[] | null;
 }
 
-const Square = ({ x, y, isActive, direction }: SquareProps) => {
+const Square = ({
+  x,
+  y,
+  isActive,
+  direction,
+  setRobotPosition,
+}: SquareProps) => {
+  const [place, setPlace] = useState<RobotProps>({
+    positionX: 0,
+    positionY: 0,
+    direction: 'NORTH',
+  });
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = (x: number, y: number, direction: Direction) => {
+    console.log('x', x, 'y', y, 'direction', direction);
+    if (setRobotPosition) {
+      setRobotPosition(x, y, direction);
+    }
+    setAnchorEl(null);
+  };
+
   const getBorderStyle = (direction?: Direction) => {
     switch (direction) {
-      case 'north':
+      case 'NORTH':
         return { borderTop: '5px solid red' };
-      case 'south':
+      case 'SOUTH':
         return { borderBottom: '5px solid red' };
-      case 'east':
+      case 'EAST':
         return { borderRight: '5px solid red' };
-      case 'west':
+      case 'WEST':
         return { borderLeft: '5px solid red' };
       default:
         return {};
@@ -44,13 +72,29 @@ const Square = ({ x, y, isActive, direction }: SquareProps) => {
         ...getBorderStyle(direction ?? undefined),
       }}
     >
-      {isActive ? (
-        <Robot direction={'north'} positionX={x} positionY={y} />
-      ) : (
-        <Typography variant="body1" color="textPrimary" gutterBottom>
-          {`${x}, ${y}`}
-        </Typography>
-      )}
+      <Button onClick={handleClick}>
+        {isActive ? (
+          <Robot
+            direction={place.direction}
+            positionX={place.positionX}
+            positionY={place.positionY}
+          />
+        ) : (
+          <Typography variant="body1" color="textPrimary" gutterBottom>
+            {`${x}, ${y}`}
+          </Typography>
+        )}
+      </Button>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => handleClose(0, 0, 'NORTH')}
+      >
+        <MenuItem onClick={() => handleClose(x, y, 'NORTH')}>NORTH</MenuItem>
+        <MenuItem onClick={() => handleClose(x, y, 'SOUTH')}>SOUTH</MenuItem>
+        <MenuItem onClick={() => handleClose(x, y, 'EAST')}>EAST</MenuItem>
+        <MenuItem onClick={() => handleClose(x, y, 'WEST')}>WEST</MenuItem>
+      </Menu>
     </Box>
   );
 };

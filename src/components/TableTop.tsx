@@ -12,6 +12,11 @@ export interface TableTopProps {
 
 const TableTop = ({ width, height }: TableTopProps) => {
   const [squares, setSquares] = useState<SquareProps[]>([]);
+  const [robotPosition, setRobotPosition] = useState({
+    x: 0,
+    y: 0,
+    direction: 'NORTH' as Direction,
+  });
 
   useEffect(() => {
     const initialSquares: SquareProps[] = [];
@@ -20,13 +25,16 @@ const TableTop = ({ width, height }: TableTopProps) => {
         initialSquares.push({
           x,
           y,
-          isActive: x === 0 && y === 0,
-          direction: x === 0 && y === 0 ? 'NORTH' : null,
+          isActive: robotPosition.x === x && robotPosition.y === y,
+          direction:
+            robotPosition.x === x && robotPosition.y === y
+              ? robotPosition.direction
+              : null,
         });
       }
     }
     setSquares(initialSquares);
-  }, [width, height]);
+  }, [width, height, robotPosition]);
 
   const updateRobotPosition = (
     newX: number,
@@ -40,6 +48,14 @@ const TableTop = ({ width, height }: TableTopProps) => {
           : { ...square, isActive: false, direction: null },
       ),
     );
+  };
+
+  const handleSetRobotPosition = (
+    x: number,
+    y: number,
+    direction: Direction,
+  ) => {
+    setRobotPosition({ x, y, direction });
   };
 
   const rows = [];
@@ -56,6 +72,7 @@ const TableTop = ({ width, height }: TableTopProps) => {
             y={y}
             isActive={square?.isActive}
             direction={square?.direction}
+            setRobotPosition={handleSetRobotPosition}
           />
         </td>,
       );

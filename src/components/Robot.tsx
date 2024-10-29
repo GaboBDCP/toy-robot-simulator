@@ -6,7 +6,6 @@ import { Direction, RobotProps } from '../types';
 const Robot = (props: RobotProps) => {
   const { direction, positionX, positionY } = props;
 
-  console.log('direction', direction);
   return (
     <>
       <Box

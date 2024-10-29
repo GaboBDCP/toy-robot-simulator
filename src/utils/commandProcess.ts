@@ -26,16 +26,16 @@ const moveForward = (position: RobotProps, gridSize: number): RobotProps => {
 
   switch (direction) {
     case 'NORTH':
-      positionY = Math.min(gridSize - 1, positionY + 1); // Mueve hacia el norte si no está en el borde superior
+      positionY = Math.min(gridSize - 1, positionY + 1);
       break;
     case 'EAST':
-      positionX = Math.min(gridSize - 1, positionX + 1); // Mueve hacia el este si no está en el borde derecho
+      positionX = Math.min(gridSize - 1, positionX + 1);
       break;
     case 'SOUTH':
-      positionY = Math.max(0, positionY - 1); // Mueve hacia el sur si no está en el borde inferior
+      positionY = Math.max(0, positionY - 1);
       break;
     case 'WEST':
-      positionX = Math.max(0, positionX - 1); // Mueve hacia el oeste si no está en el borde izquierdo
+      positionX = Math.max(0, positionX - 1);
       break;
   }
 
@@ -53,14 +53,12 @@ const commandProcess = (commandList: Commands[], tableTopSize: number) => {
   const x = parcePosition(commandList[0]).positionX;
   const y = parcePosition(commandList[0]).positionY;
   const direction: Direction = parcePosition(commandList[0]).direction;
-  // Posición inicial del Rover
   let position: RobotProps = {
     positionX: x,
     positionY: y,
     direction: direction,
   };
 
-  // Procesa cada comando
   commandList.forEach((command) => {
     if (command === 'LEFT') {
       position.direction = rotateLeft(position.direction);
@@ -71,7 +69,7 @@ const commandProcess = (commandList: Commands[], tableTopSize: number) => {
     }
   });
 
-  return position; // Retorna la posición final
+  return position;
 };
 
 export default commandProcess;
