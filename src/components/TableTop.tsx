@@ -125,6 +125,7 @@ const TableTop = ({ width, height }: TableTopProps) => {
           overflow="auto"
           sx={{
             padding: { xs: '0', sm: '0', md: '2' },
+            marginBottom: '18px',
           }}
         >
           <table
@@ -199,6 +200,7 @@ const TableTop = ({ width, height }: TableTopProps) => {
           margin="normal"
           size="small"
           fullWidth
+          multiline
           sx={{ marginRight: '10px', maxWidth: '80vh' }}
         />
       </Box>
