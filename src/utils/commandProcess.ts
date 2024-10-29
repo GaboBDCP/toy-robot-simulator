@@ -21,17 +21,19 @@ const rotateRight = (direction: Direction): Direction => {
   return directions[direction];
 };
 
-const moveForward = (position: RobotProps, gridSize: number): RobotProps => {
-  console.log('gridSize', gridSize);
-
+const moveForward = (
+  position: RobotProps,
+  gridSizeX: number,
+  gridSizeY: number,
+): RobotProps => {
   let { positionX, positionY, direction } = position;
 
   switch (direction) {
     case 'NORTH':
-      positionY = Math.min(gridSize - 1, positionY + 1);
+      positionY = Math.min(gridSizeY - 1, positionY + 1);
       break;
     case 'EAST':
-      positionX = Math.min(gridSize - 1, positionX + 1);
+      positionX = Math.min(gridSizeX - 1, positionX + 1);
       break;
     case 'SOUTH':
       positionY = Math.max(0, positionY - 1);
@@ -51,7 +53,11 @@ const parcePosition = (command: string): RobotProps => {
   return { positionX: x, positionY: y, direction };
 };
 
-const commandProcess = (commandList: Commands[], tableTopSize: number) => {
+const commandProcess = (
+  commandList: Commands[],
+  gridSizeX: number,
+  gridSizeY: number,
+) => {
   const x = parcePosition(commandList[0]).positionX;
   const y = parcePosition(commandList[0]).positionY;
   const direction: Direction = parcePosition(commandList[0]).direction;
@@ -67,7 +73,7 @@ const commandProcess = (commandList: Commands[], tableTopSize: number) => {
     } else if (command === 'RIGHT') {
       position.direction = rotateRight(position.direction);
     } else if (command === 'MOVE') {
-      position = moveForward(position, tableTopSize);
+      position = moveForward(position, gridSizeX, gridSizeY);
     }
   });
 

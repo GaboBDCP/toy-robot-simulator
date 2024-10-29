@@ -33,7 +33,7 @@ const TableTop = ({ width, height }: TableTopProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('commands', commands);
-    const result = commandProcess(commands, width * height);
+    const result = commandProcess(commands, width, height);
     setRobotPosition({
       positionX: result.positionX,
       positionY: result.positionY,
