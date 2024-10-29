@@ -15,17 +15,17 @@ describe('commandProcess', () => {
     const result = commandProcess(['PLACE 0,0,NORTH', 'MOVE'], 5);
 
     expect(result).toStrictEqual({
-      positionX: 1,
-      positionY: 0,
+      positionX: 0,
+      positionY: 1,
       direction: 'NORTH',
     });
   });
 
   it('should NOT process MOVE command correctly in the edge', () => {
-    const result = commandProcess(['PLACE 4,0,NORTH', 'MOVE'], 5);
+    const result = commandProcess(['PLACE 0,4,NORTH', 'MOVE'], 5);
     expect(result).toStrictEqual({
-      positionX: 4,
-      positionY: 0,
+      positionX: 0,
+      positionY: 4,
       direction: 'NORTH',
     });
   });
@@ -60,7 +60,7 @@ describe('commandProcess', () => {
   it('should not move out of bounds', () => {
     const result = commandProcess(['PLACE 2,0,SOUTH', 'MOVE'], 5);
     expect(result).toStrictEqual({
-      positionX: 1,
+      positionX: 2,
       positionY: 0,
       direction: 'SOUTH',
     });
@@ -71,6 +71,42 @@ describe('commandProcess', () => {
       positionX: 0,
       positionY: 0,
       direction: 'SOUTH',
+    });
+  });
+
+  it('should not move out of bounds', () => {
+    const result = commandProcess(
+      ['PLACE 1,2,EAST', 'MOVE', 'MOVE', 'LEFT', 'MOVE', 'REPORT'],
+      5,
+    );
+    expect(result).toStrictEqual({
+      positionX: 3,
+      positionY: 3,
+      direction: 'NORTH',
+    });
+  });
+
+  it('should not move out of bounds', () => {
+    const result = commandProcess(
+      [
+        'PLACE 3,3,EAST',
+        'MOVE',
+        'MOVE',
+        'MOVE',
+        'LEFT',
+        'MOVE',
+        'MOVE',
+        'MOVE',
+        'LEFT',
+        'MOVE',
+        'REPORT',
+      ],
+      5,
+    );
+    expect(result).toStrictEqual({
+      positionX: 3,
+      positionY: 4,
+      direction: 'WEST',
     });
   });
 });

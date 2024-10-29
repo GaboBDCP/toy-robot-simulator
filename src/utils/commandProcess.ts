@@ -23,20 +23,19 @@ const rotateRight = (direction: Direction): Direction => {
 
 const moveForward = (position: RobotProps, gridSize: number): RobotProps => {
   let { positionX, positionY, direction } = position;
-  console.log('positionX', positionX);
-  console.log('positionY', positionY);
+
   switch (direction) {
     case 'NORTH':
-      positionX = Math.min(gridSize - 1, positionX + 1); // Mueve hacia el norte si no está en el borde superior
+      positionY = Math.min(gridSize - 1, positionY + 1); // Mueve hacia el norte si no está en el borde superior
       break;
     case 'EAST':
-      positionY = Math.min(gridSize - 1, positionY + 1); // Mueve hacia el este si no está en el borde derecho
+      positionX = Math.min(gridSize - 1, positionX + 1); // Mueve hacia el este si no está en el borde derecho
       break;
     case 'SOUTH':
-      positionX = Math.max(0, positionX - 1); // Mueve hacia el sur si no está en el borde inferior
+      positionY = Math.max(0, positionY - 1); // Mueve hacia el sur si no está en el borde inferior
       break;
     case 'WEST':
-      positionY = Math.max(0, positionY - 1); // Mueve hacia el oeste si no está en el borde izquierdo
+      positionX = Math.max(0, positionX - 1); // Mueve hacia el oeste si no está en el borde izquierdo
       break;
   }
 
@@ -61,8 +60,6 @@ const commandProcess = (commandList: Commands[], tableTopSize: number) => {
     direction: direction,
   };
 
-  console.log('Init: position', position);
-
   // Procesa cada comando
   commandList.forEach((command) => {
     if (command === 'LEFT') {
@@ -73,8 +70,6 @@ const commandProcess = (commandList: Commands[], tableTopSize: number) => {
       position = moveForward(position, tableTopSize);
     }
   });
-
-  console.log('Res: position', position);
 
   return position; // Retorna la posición final
 };
