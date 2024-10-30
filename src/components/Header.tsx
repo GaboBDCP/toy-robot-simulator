@@ -21,20 +21,6 @@ const Header: React.FC<HeaderProps> = ({
     setHeight(Number(event.target.value));
   };
 
-  // const updateRobotPosition = (
-  //   newX: number,
-  //   newY: number,
-  //   newDirection: Direction,
-  // ) => {
-  //   setSquares((prevSquares) =>
-  //     prevSquares.map((square) =>
-  //       square.x === newX && square.y === newY
-  //         ? { ...square, isActive: true, direction: newDirection }
-  //         : { ...square, isActive: false, direction: null },
-  //     ),
-  //   );
-  // };
-
   return (
     <Box
       display="flex"
@@ -51,6 +37,7 @@ const Header: React.FC<HeaderProps> = ({
         type="number"
         value={width}
         onChange={handleWidthChange}
+        inputProps={{ min: 1, max: 20 }}
         variant="outlined"
         color="primary"
         margin="normal"
@@ -62,6 +49,7 @@ const Header: React.FC<HeaderProps> = ({
         type="number"
         value={height}
         onChange={handleHeightChange}
+        inputProps={{ min: 1, max: 20 }}
         variant="outlined"
         color="primary"
         margin="normal"
