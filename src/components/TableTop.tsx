@@ -25,10 +25,7 @@ const TableTop = ({ width, height }: TableTopProps) => {
     direction: 'NORTH',
   });
 
-  const [commands, setCommands] = useState<Commands[]>([
-    'PLACE 0,0,NORTH',
-    'MOVE',
-  ]);
+  const [commands, setCommands] = useState<Commands[]>(['PLACE 0,0,NORTH']);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
